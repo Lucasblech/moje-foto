@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Lucas Photo London</title>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .gallery img {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+        .image-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.92);
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            padding: 30px;
+        }
+        .image-modal.active {
+            display: flex;
+        }
+        .image-modal img {
+            max-width: 90%;
+            max-height: 90%;
+            box-shadow: 0 0 30px rgba(255, 0, 0, 0.8);
+            border: 4px solid rgba(255, 0, 0, 0.8);
+        }
+        .image-modal .close-btn,
+        .image-modal .nav-btn {
+            position: absolute;
+            color: #fff;
+            font-size: 2.5rem;
+            font-weight: 700;
+            cursor: pointer;
+            line-height: 1;
+            user-select: none;
+            padding: 10px 16px;
+            border-radius: 50%;
+            background: transparent;
+            transition: color 0.2s ease, text-shadow 0.2s ease, border-color 0.2s ease;
+        }
+        .image-modal .close-btn:hover,
+        .image-modal .nav-btn:hover {
+            color: #ff00ff;
+            text-shadow: 0 0 10px #ff00ff, 0 0 20px #00ffff, 0 0 30px #ffff00;
+        }
+        .image-modal .close-btn {
+            top: 20px;
+            right: 20px;
+        }
+        .image-modal .nav-btn {
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        .image-modal .nav-prev {
+            left: 20px;
+        }
+        .image-modal .nav-next {
+            right: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1 class="neon-title">LUCAS-PHOTO-LONDON</h1>
+        <p class="subtitle">ZATRZYMAĆ CZAS W ODPOWIEDNIEJ CHWILI</p>
+    </header>
+
+    <div class="gallery-container">
+        <div class="gallery">
+            <div class="gallery-row">
+                <div class="box"><img src="londyn1.jpg" alt="London 1"></div>
+                <div class="box"><img src="londyn2.jpg" alt="London 2"></div>
+                <div class="box"><img src="londyn3.jpg" alt="London 3"></div>
+                <div class="box"><img src="londyn4.jpg" alt="London 4"></div>
+            </div>
+            <div class="gallery-row">
+                <div class="box"><img src="londyn5.jpg" alt="London 5"></div>
+                <div class="box"><img src="londyn6.jpg" alt="London 6"></div>
+                <div class="box"><img src="londyn7.jpg" alt="London 7"></div>
+                <div class="box"><img src="londyn8.jpg" alt="London 8"></div>
+            </div>
+            <div class="gallery-row">
+                <div class="box"><img src="londyn9.jpg" alt="London 9"></div>
+                <div class="box"><img src="londyn10.jpg" alt="London 10"></div>
+                <div class="box"><img src="londyn11.jpg" alt="London 11"></div>
+                <div class="box"><img src="londyn12.jpg" alt="London 12"></div>
+            </div>
+            <div class="gallery-row">
+                <div class="box"><img src="londyn13.jpg" alt="London 13"></div>
+                <div class="box"><img src="londyn14.jpg" alt="London 14"></div>
+                <div class="box"><img src="londyn15.jpg" alt="London 15"></div>
+                <div class="box"><img src="londyn16.jpg" alt="London 16"></div>
+            </div>
+            <div class="gallery-row">
+                <div class="box"><img src="londyn17.jpg" alt="London 17"></div>
+                <div class="box"><img src="londyn18.jpg" alt="London 18"></div>
+                <div class="box"><img src="londyn20.jpg" alt="London 20"></div>
+                <div class="box"><img src="londyn21.jpg" alt="London 21"></div>
+            </div>
+            <div class="gallery-row">
+                <div class="box"><img src="londyn22.jpg" alt="London 22"></div>
+                <div class="box"><img src="londyn23.jpg" alt="London 23"></div>
+                <div class="box"><img src="londyn24.jpg" alt="London 24"></div>
+                <div class="box"><img src="londyn25.jpg" alt="London 25"></div>
+            </div>
+            <div class="gallery-row">
+                <div class="box"><img src="london28.jpg" alt="London 28"></div>
+                <div class="box"><img src="london29.jpg" alt="London 29"></div>
+                <div class="box"><img src="londyn26.jpg" alt="London 26"></div>
+                <div class="box"><img src="londyn27.jpg" alt="London 27"></div>
+            </div>
+            <div class="gallery-row">
+                <div class="box"><img src="london30.jpg" alt="London 30"></div>
+            </div>
+        </div>
+        
+        <div class="decor-line"></div>
+    </div>
+
+    <div class="image-modal" id="imageModal">
+        <span class="close-btn" id="modalClose">&times;</span>
+        <span class="nav-btn nav-prev" id="modalPrev">&#8249;</span>
+        <span class="nav-btn nav-next" id="modalNext">&#8250;</span>
+        <img src="" alt="Powiększone zdjęcie" id="modalImage">
+    </div>
+
+    <footer>
+        <p>KONTAKT: <a href="mailto:lucas.photo.london@gmail.com">lucas.photo.london@gmail.com</a></p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var modal = document.getElementById('imageModal');
+            var modalImage = document.getElementById('modalImage');
+            var closeBtn = document.getElementById('modalClose');
+            var prevBtn = document.getElementById('modalPrev');
+            var nextBtn = document.getElementById('modalNext');
+            var galleryImages = Array.from(document.querySelectorAll('.gallery img'));
+            var currentIndex = -1;
+
+            function openModal(index) {
+                currentIndex = index;
+                modalImage.src = galleryImages[currentIndex].src;
+                modalImage.alt = galleryImages[currentIndex].alt;
+                modal.classList.add('active');
+            }
+
+            function closeModal() {
+                modal.classList.remove('active');
+                modalImage.src = '';
+                currentIndex = -1;
+            }
+
+            function showPrevious() {
+                if (currentIndex > 0) {
+                    openModal(currentIndex - 1);
+                }
+            }
+
+            function showNext() {
+                if (currentIndex < galleryImages.length - 1) {
+                    openModal(currentIndex + 1);
+                }
+            }
+
+            galleryImages.forEach(function(img, index) {
+                img.addEventListener('click', function() {
+                    openModal(index);
+                });
+            });
+
+            closeBtn.addEventListener('click', closeModal);
+            prevBtn.addEventListener('click', function(event) {
+                event.stopPropagation();
+                showPrevious();
+            });
+            nextBtn.addEventListener('click', function(event) {
+                event.stopPropagation();
+                showNext();
+            });
+
+            modal.addEventListener('click', function(event) {
+                if (event.target === modal) {
+                    closeModal();
+                }
+            });
+
+            document.addEventListener('keydown', function(event) {
+                if (event.key === 'Escape') {
+                    closeModal();
+                }
+                if (modal.classList.contains('active')) {
+                    if (event.key === 'ArrowLeft') {
+                        showPrevious();
+                    }
+                    if (event.key === 'ArrowRight') {
+                        showNext();
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
